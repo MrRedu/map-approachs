@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "name": "Farmacia Xana Galerías Ávila",
+    "label": "Galerías Ávila",
+    "category": "Farmacia",
+    "rating": 4.8,
+    "reviews": 12453,
+    "hours": "10:00 AM - 5:00 PM",
+    "image": "/location-image-placeholder.jpeg",
+    "lng": -66.90277052965249,
+    "lat": 10.505927151021995
+  },
+  {
+    "id": 2,
+    "name": "Farmacia Xana La California",
+    "label": "La California",
+    "category": "Farmacia",
+    "rating": 4.9,
+    "reviews": 8234,
+    "hours": "Open 24 hours",
+    "image": "/location-image-placeholder.jpeg",
+    "lng": -66.82020545786798,
+    "lat": 10.475091050927551
+  },
+  {
+    "id": 3,
+    "name": "Farmacia Xana Boulevar de Catia",
+    "label": "Boulevar de Catia",
+    "category": "Farmacia",
+    "rating": 4.7,
+    "reviews": 5621,
+    "hours": "5:15 AM - 2:00 AM",
+    "image": "/location-image-placeholder.jpeg",
+    "lng": -66.94758140019634,
+    "lat": 10.509920646527059
+  },
+  {
+    "id": 4,
+    "name": "Farmacia Xana C.C Chacaito",
+    "label": "C.C Chacaito",
+    "category": "Farmacia",
+    "rating": 4.8,
+    "reviews": 12453,
+    "hours": "10:00 AM - 5:00 PM",
+    "image": "/location-image-placeholder.jpeg",
+    "lng": -66.86924486371484,
+    "lat": 10.492167215657553
+  },
+  {
+    "id": 5,
+    "name": "Farmacia Xana Bobare",
+    "label": "Bobare",
+    "category": "Farmacia",
+    "rating": 4.8,
+    "reviews": 12453,
+    "hours": "10:00 AM - 5:00 PM",
+    "image": "/location-image-placeholder.jpeg",
+    "lng": -69.47269744562296,
+    "lat": 10.275284724864035
+  },
+  {
+    "id": 6,
+    "name": "Farmacia Xana Quibor",
+    "label": "Quibor",
+    "category": "Farmacia",
+    "rating": 4.8,
+    "reviews": 12453,
+    "hours": "10:00 AM - 5:00 PM",
+    "image": "/location-image-placeholder.jpeg",
+    "lng": -69.62000962431169,
+    "lat": 9.947493272006344
+  },
+  {
+    "id": 7,
+    "name": "Farmacia Xana Traki Cabudare",
+    "label": "Traki Cabudare",
+    "category": "Farmacia",
+    "rating": 4.8,
+    "reviews": 12453,
+    "hours": "10:00 AM - 5:00 PM",
+    "image": "/location-image-placeholder.jpeg",
+    "lng": -69.23374835545083,
+    "lat": 10.024202922225964
+  }
+]
