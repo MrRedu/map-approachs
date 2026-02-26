@@ -17,7 +17,7 @@ export default function MapsLayout({
         </div>
         <ThemeToggle />
       </header>
-      <main className="flex-1 p-2 md:p-4 lg:p-6">{children}</main>
+      {children}
     </div>
   );
 }

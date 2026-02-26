@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import MapLibreGL, { type PopupOptions, type MarkerOptions } from "maplibre-gl";
-import "maplibre-gl/dist/maplibre-gl.css";
+import MapLibreGL, { type PopupOptions, type MarkerOptions } from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import {
   createContext,
   forwardRef,
@@ -14,38 +14,38 @@ import {
   useRef,
   useState,
   type ReactNode,
-} from "react";
-import { createPortal } from "react-dom";
-import { X, Minus, Plus, Locate, Maximize, Loader2 } from "lucide-react";
+} from 'react';
+import { createPortal } from 'react-dom';
+import { X, Minus, Plus, Locate, Maximize, Loader2 } from 'lucide-react';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 const defaultStyles = {
-  dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
-  light: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+  dark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+  light: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
 };
 
-type Theme = "light" | "dark";
+type Theme = 'light' | 'dark';
 
 // Check document class for theme (works with next-themes, etc.)
 function getDocumentTheme(): Theme | null {
-  if (typeof document === "undefined") return null;
-  if (document.documentElement.classList.contains("dark")) return "dark";
-  if (document.documentElement.classList.contains("light")) return "light";
+  if (typeof document === 'undefined') return null;
+  if (document.documentElement.classList.contains('dark')) return 'dark';
+  if (document.documentElement.classList.contains('light')) return 'light';
   return null;
 }
 
 // Get system preference
 function getSystemTheme(): Theme {
-  if (typeof window === "undefined") return "light";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  if (typeof window === 'undefined') return 'light';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
 }
 
-function useResolvedTheme(themeProp?: "light" | "dark"): Theme {
+function useResolvedTheme(themeProp?: 'light' | 'dark'): Theme {
   const [detectedTheme, setDetectedTheme] = useState<Theme>(
-    () => getDocumentTheme() ?? getSystemTheme()
+    () => getDocumentTheme() ?? getSystemTheme(),
   );
 
   useEffect(() => {
@@ -60,22 +60,22 @@ function useResolvedTheme(themeProp?: "light" | "dark"): Theme {
     });
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["class"],
+      attributeFilter: ['class'],
     });
 
     // Also watch for system preference changes
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleSystemChange = (e: MediaQueryListEvent) => {
       // Only use system preference if no document class is set
       if (!getDocumentTheme()) {
-        setDetectedTheme(e.matches ? "dark" : "light");
+        setDetectedTheme(e.matches ? 'dark' : 'light');
       }
     };
-    mediaQuery.addEventListener("change", handleSystemChange);
+    mediaQuery.addEventListener('change', handleSystemChange);
 
     return () => {
       observer.disconnect();
-      mediaQuery.removeEventListener("change", handleSystemChange);
+      mediaQuery.removeEventListener('change', handleSystemChange);
     };
   }, [themeProp]);
 
@@ -92,7 +92,7 @@ const MapContext = createContext<MapContextValue | null>(null);
 function useMap() {
   const context = useContext(MapContext);
   if (!context) {
-    throw new Error("useMap must be used within a Map component");
+    throw new Error('useMap must be used within a Map component');
   }
   return context;
 }
@@ -140,7 +140,7 @@ type MapProps = {
    * to enable controlled mode where the map viewport is driven by your state.
    */
   onViewportChange?: (viewport: MapViewport) => void;
-} & Omit<MapLibreGL.MapOptions, "container" | "style">;
+} & Omit<MapLibreGL.MapOptions, 'container' | 'style'>;
 
 function DefaultLoader() {
   return (
@@ -175,7 +175,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     onViewportChange,
     ...props
   },
-  ref
+  ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<MapLibreGL.Map | null>(null);
@@ -196,7 +196,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
       dark: styles?.dark ?? defaultStyles.dark,
       light: styles?.light ?? defaultStyles.light,
     }),
-    [styles]
+    [styles],
   );
 
   // Expose the map instance to the parent component
@@ -214,7 +214,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     if (!containerRef.current) return;
 
     const initialStyle =
-      resolvedTheme === "dark" ? mapStyles.dark : mapStyles.light;
+      resolvedTheme === 'dark' ? mapStyles.dark : mapStyles.light;
     currentStyleRef.current = initialStyle;
 
     const map = new MapLibreGL.Map({
@@ -248,16 +248,16 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
       onViewportChangeRef.current?.(getViewport(map));
     };
 
-    map.on("load", loadHandler);
-    map.on("styledata", styleDataHandler);
-    map.on("move", handleMove);
+    map.on('load', loadHandler);
+    map.on('styledata', styleDataHandler);
+    map.on('move', handleMove);
     setMapInstance(map);
 
     return () => {
       clearStyleTimeout();
-      map.off("load", loadHandler);
-      map.off("styledata", styleDataHandler);
-      map.off("move", handleMove);
+      map.off('load', loadHandler);
+      map.off('styledata', styleDataHandler);
+      map.off('move', handleMove);
       map.remove();
       setIsLoaded(false);
       setIsStyleLoaded(false);
@@ -299,7 +299,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     if (!mapInstance || !resolvedTheme) return;
 
     const newStyle =
-      resolvedTheme === "dark" ? mapStyles.dark : mapStyles.light;
+      resolvedTheme === 'dark' ? mapStyles.dark : mapStyles.light;
 
     if (currentStyleRef.current === newStyle) return;
 
@@ -315,14 +315,14 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
       map: mapInstance,
       isLoaded: isLoaded && isStyleLoaded,
     }),
-    [mapInstance, isLoaded, isStyleLoaded]
+    [mapInstance, isLoaded, isStyleLoaded],
   );
 
   return (
     <MapContext.Provider value={contextValue}>
       <div
         ref={containerRef}
-        className={cn("relative w-full h-full", className)}
+        className={cn('relative w-full h-full', className)}
       >
         {!isLoaded && <DefaultLoader />}
         {/* SSR-safe: children render only when map is loaded on client */}
@@ -342,7 +342,7 @@ const MarkerContext = createContext<MarkerContextValue | null>(null);
 function useMarkerContext() {
   const context = useContext(MarkerContext);
   if (!context) {
-    throw new Error("Marker components must be used within MapMarker");
+    throw new Error('Marker components must be used within MapMarker');
   }
   return context;
 }
@@ -366,7 +366,7 @@ type MapMarkerProps = {
   onDrag?: (lngLat: { lng: number; lat: number }) => void;
   /** Callback when marker drag ends (requires draggable: true) */
   onDragEnd?: (lngLat: { lng: number; lat: number }) => void;
-} & Omit<MarkerOptions, "element">;
+} & Omit<MarkerOptions, 'element'>;
 
 function MapMarker({
   longitude,
@@ -403,7 +403,7 @@ function MapMarker({
   const marker = useMemo(() => {
     const markerInstance = new MapLibreGL.Marker({
       ...markerOptions,
-      element: document.createElement("div"),
+      element: document.createElement('div'),
       draggable,
     }).setLngLat([longitude, latitude]);
 
@@ -413,13 +413,13 @@ function MapMarker({
     const handleMouseLeave = (e: MouseEvent) =>
       callbacksRef.current.onMouseLeave?.(e);
 
-    markerInstance.getElement()?.addEventListener("click", handleClick);
+    markerInstance.getElement()?.addEventListener('click', handleClick);
     markerInstance
       .getElement()
-      ?.addEventListener("mouseenter", handleMouseEnter);
+      ?.addEventListener('mouseenter', handleMouseEnter);
     markerInstance
       .getElement()
-      ?.addEventListener("mouseleave", handleMouseLeave);
+      ?.addEventListener('mouseleave', handleMouseLeave);
 
     const handleDragStart = () => {
       const lngLat = markerInstance.getLngLat();
@@ -434,9 +434,9 @@ function MapMarker({
       callbacksRef.current.onDragEnd?.({ lng: lngLat.lng, lat: lngLat.lat });
     };
 
-    markerInstance.on("dragstart", handleDragStart);
-    markerInstance.on("drag", handleDrag);
-    markerInstance.on("dragend", handleDragEnd);
+    markerInstance.on('dragstart', handleDragStart);
+    markerInstance.on('drag', handleDrag);
+    markerInstance.on('dragend', handleDragEnd);
 
     return markerInstance;
 
@@ -478,10 +478,10 @@ function MapMarker({
     marker.setRotation(markerOptions.rotation ?? 0);
   }
   if (marker.getRotationAlignment() !== markerOptions.rotationAlignment) {
-    marker.setRotationAlignment(markerOptions.rotationAlignment ?? "auto");
+    marker.setRotationAlignment(markerOptions.rotationAlignment ?? 'auto');
   }
   if (marker.getPitchAlignment() !== markerOptions.pitchAlignment) {
-    marker.setPitchAlignment(markerOptions.pitchAlignment ?? "auto");
+    marker.setPitchAlignment(markerOptions.pitchAlignment ?? 'auto');
   }
 
   return (
@@ -502,10 +502,10 @@ function MarkerContent({ children, className }: MarkerContentProps) {
   const { marker } = useMarkerContext();
 
   return createPortal(
-    <div className={cn("relative cursor-pointer", className)}>
+    <div className={cn('relative cursor-pointer', className)}>
       {children || <DefaultMarkerIcon />}
     </div>,
-    marker.getElement()
+    marker.getElement(),
   );
 }
 
@@ -522,7 +522,7 @@ type MarkerPopupProps = {
   className?: string;
   /** Show a close button in the popup (default: false) */
   closeButton?: boolean;
-} & Omit<PopupOptions, "className" | "closeButton">;
+} & Omit<PopupOptions, 'className' | 'closeButton'>;
 
 function MarkerPopup({
   children,
@@ -531,7 +531,7 @@ function MarkerPopup({
   ...popupOptions
 }: MarkerPopupProps) {
   const { marker, map } = useMarkerContext();
-  const container = useMemo(() => document.createElement("div"), []);
+  const container = useMemo(() => document.createElement('div'), []);
   const prevPopupOptions = useRef(popupOptions);
 
   const popup = useMemo(() => {
@@ -540,7 +540,7 @@ function MarkerPopup({
       ...popupOptions,
       closeButton: false,
     })
-      .setMaxWidth("none")
+      .setMaxWidth('none')
       .setDOMContent(container);
 
     return popupInstance;
@@ -566,7 +566,7 @@ function MarkerPopup({
       popup.setOffset(popupOptions.offset ?? 16);
     }
     if (prev.maxWidth !== popupOptions.maxWidth && popupOptions.maxWidth) {
-      popup.setMaxWidth(popupOptions.maxWidth ?? "none");
+      popup.setMaxWidth(popupOptions.maxWidth ?? 'none');
     }
 
     prevPopupOptions.current = popupOptions;
@@ -577,8 +577,8 @@ function MarkerPopup({
   return createPortal(
     <div
       className={cn(
-        "relative rounded-md border bg-popover p-3 text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95",
-        className
+        'relative rounded-md border bg-popover p-3 text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95',
+        className,
       )}
     >
       {closeButton && (
@@ -594,7 +594,7 @@ function MarkerPopup({
       )}
       {children}
     </div>,
-    container
+    container,
   );
 }
 
@@ -603,7 +603,7 @@ type MarkerTooltipProps = {
   children: ReactNode;
   /** Additional CSS classes for the tooltip container */
   className?: string;
-} & Omit<PopupOptions, "className" | "closeButton" | "closeOnClick">;
+} & Omit<PopupOptions, 'className' | 'closeButton' | 'closeOnClick'>;
 
 function MarkerTooltip({
   children,
@@ -611,7 +611,7 @@ function MarkerTooltip({
   ...popupOptions
 }: MarkerTooltipProps) {
   const { marker, map } = useMarkerContext();
-  const container = useMemo(() => document.createElement("div"), []);
+  const container = useMemo(() => document.createElement('div'), []);
   const prevTooltipOptions = useRef(popupOptions);
 
   const tooltip = useMemo(() => {
@@ -620,7 +620,7 @@ function MarkerTooltip({
       ...popupOptions,
       closeOnClick: true,
       closeButton: false,
-    }).setMaxWidth("none");
+    }).setMaxWidth('none');
 
     return tooltipInstance;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -636,12 +636,12 @@ function MarkerTooltip({
     };
     const handleMouseLeave = () => tooltip.remove();
 
-    marker.getElement()?.addEventListener("mouseenter", handleMouseEnter);
-    marker.getElement()?.addEventListener("mouseleave", handleMouseLeave);
+    marker.getElement()?.addEventListener('mouseenter', handleMouseEnter);
+    marker.getElement()?.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
-      marker.getElement()?.removeEventListener("mouseenter", handleMouseEnter);
-      marker.getElement()?.removeEventListener("mouseleave", handleMouseLeave);
+      marker.getElement()?.removeEventListener('mouseenter', handleMouseEnter);
+      marker.getElement()?.removeEventListener('mouseleave', handleMouseLeave);
       tooltip.remove();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -654,7 +654,7 @@ function MarkerTooltip({
       tooltip.setOffset(popupOptions.offset ?? 16);
     }
     if (prev.maxWidth !== popupOptions.maxWidth && popupOptions.maxWidth) {
-      tooltip.setMaxWidth(popupOptions.maxWidth ?? "none");
+      tooltip.setMaxWidth(popupOptions.maxWidth ?? 'none');
     }
 
     prevTooltipOptions.current = popupOptions;
@@ -663,13 +663,13 @@ function MarkerTooltip({
   return createPortal(
     <div
       className={cn(
-        "rounded-md bg-foreground px-2 py-1 text-xs text-background shadow-md animate-in fade-in-0 zoom-in-95",
-        className
+        'rounded-md bg-foreground px-2 py-1 text-xs text-background shadow-md animate-in fade-in-0 zoom-in-95',
+        className,
       )}
     >
       {children}
     </div>,
-    container
+    container,
   );
 }
 
@@ -679,26 +679,26 @@ type MarkerLabelProps = {
   /** Additional CSS classes for the label */
   className?: string;
   /** Position of the label relative to the marker (default: "top") */
-  position?: "top" | "bottom";
+  position?: 'top' | 'bottom';
 };
 
 function MarkerLabel({
   children,
   className,
-  position = "top",
+  position = 'top',
 }: MarkerLabelProps) {
   const positionClasses = {
-    top: "bottom-full mb-1",
-    bottom: "top-full mt-1",
+    top: 'bottom-full mb-1',
+    bottom: 'top-full mt-1',
   };
 
   return (
     <div
       className={cn(
-        "absolute left-1/2 -translate-x-1/2 whitespace-nowrap",
-        "text-[10px] font-medium text-foreground",
+        'absolute left-1/2 -translate-x-1/2 whitespace-nowrap',
+        'text-[10px] font-medium text-foreground',
         positionClasses[position],
-        className
+        className,
       )}
     >
       {children}
@@ -708,7 +708,7 @@ function MarkerLabel({
 
 type MapControlsProps = {
   /** Position of the controls on the map (default: "bottom-right") */
-  position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
+  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
   /** Show zoom in/out buttons (default: true) */
   showZoom?: boolean;
   /** Show compass button to reset bearing (default: false) */
@@ -724,10 +724,10 @@ type MapControlsProps = {
 };
 
 const positionClasses = {
-  "top-left": "top-2 left-2",
-  "top-right": "top-2 right-2",
-  "bottom-left": "bottom-2 left-2",
-  "bottom-right": "bottom-10 right-2",
+  'top-left': 'top-2 left-2',
+  'top-right': 'top-2 right-2',
+  'bottom-left': 'bottom-2 left-2',
+  'bottom-right': 'bottom-10 right-2',
 };
 
 function ControlGroup({ children }: { children: React.ReactNode }) {
@@ -755,8 +755,8 @@ function ControlButton({
       aria-label={label}
       type="button"
       className={cn(
-        "flex items-center justify-center size-8 hover:bg-accent dark:hover:bg-accent/40 transition-colors",
-        disabled && "opacity-50 pointer-events-none cursor-not-allowed"
+        'flex items-center justify-center size-8 hover:bg-accent dark:hover:bg-accent/40 transition-colors',
+        disabled && 'opacity-50 pointer-events-none cursor-not-allowed',
       )}
       disabled={disabled}
     >
@@ -766,7 +766,7 @@ function ControlButton({
 }
 
 function MapControls({
-  position = "bottom-right",
+  position = 'bottom-right',
   showZoom = true,
   showCompass = false,
   showLocate = false,
@@ -776,6 +776,12 @@ function MapControls({
 }: MapControlsProps) {
   const { map } = useMap();
   const [waitingForLocation, setWaitingForLocation] = useState(false);
+  const [userLocation, setUserLocation] = useState<{
+    longitude: number;
+    latitude: number;
+  } | null>(null);
+  // Ref to the native MapLibre marker so we can update/remove it
+  const userMarkerRef = useRef<MapLibreGL.Marker | null>(null);
 
   const handleZoomIn = useCallback(() => {
     map?.zoomTo(map.getZoom() + 1, { duration: 300 });
@@ -791,7 +797,7 @@ function MapControls({
 
   const handleLocate = useCallback(() => {
     setWaitingForLocation(true);
-    if ("geolocation" in navigator) {
+    if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const coords = {
@@ -804,15 +810,90 @@ function MapControls({
             duration: 1500,
           });
           onLocate?.(coords);
+          setUserLocation(coords);
           setWaitingForLocation(false);
         },
         (error) => {
-          console.error("Error getting location:", error);
+          console.error('Error getting location:', error);
           setWaitingForLocation(false);
-        }
+        },
       );
     }
   }, [map, onLocate]);
+
+  // Add/update the user location marker on the map whenever userLocation changes
+  useEffect(() => {
+    if (!map || !userLocation) return;
+
+    // Create the pulsing dot element on first call
+    if (!userMarkerRef.current) {
+      const el = document.createElement('div');
+      el.style.cssText = `
+        position: relative;
+        width: 20px;
+        height: 20px;
+      `;
+
+      // Outer pulsing ring
+      const ring = document.createElement('div');
+      ring.style.cssText = `
+        position: absolute;
+        inset: -6px;
+        border-radius: 50%;
+        background: rgba(59, 130, 246, 0.25);
+        animation: user-location-pulse 2s ease-out infinite;
+      `;
+
+      // Inner solid blue dot
+      const dot = document.createElement('div');
+      dot.style.cssText = `
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: #3b82f6;
+        border: 3px solid #ffffff;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.6);
+      `;
+
+      el.appendChild(ring);
+      el.appendChild(dot);
+
+      // Inject the keyframe animation once into the document
+      if (!document.getElementById('user-location-pulse-style')) {
+        const style = document.createElement('style');
+        style.id = 'user-location-pulse-style';
+        style.textContent = `
+          @keyframes user-location-pulse {
+            0%   { transform: scale(1);   opacity: 0.8; }
+            70%  { transform: scale(2.2); opacity: 0;   }
+            100% { transform: scale(2.2); opacity: 0;   }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      userMarkerRef.current = new MapLibreGL.Marker({
+        element: el,
+        anchor: 'center',
+      })
+        .setLngLat([userLocation.longitude, userLocation.latitude])
+        .addTo(map);
+    } else {
+      // Just update the position on subsequent locates
+      userMarkerRef.current.setLngLat([
+        userLocation.longitude,
+        userLocation.latitude,
+      ]);
+    }
+
+    return () => {
+      // Cleanup when the MapControls component unmounts
+      userMarkerRef.current?.remove();
+      userMarkerRef.current = null;
+    };
+    // Only re-run when userLocation actually changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLocation]);
 
   const handleFullscreen = useCallback(() => {
     const container = map?.getContainer();
@@ -827,9 +908,9 @@ function MapControls({
   return (
     <div
       className={cn(
-        "absolute z-10 flex flex-col gap-1.5",
+        'absolute z-10 flex flex-col gap-1.5',
         positionClasses[position],
-        className
+        className,
       )}
     >
       {showZoom && (
@@ -888,13 +969,13 @@ function CompassButton({ onClick }: { onClick: () => void }) {
       compass.style.transform = `rotateX(${pitch}deg) rotateZ(${-bearing}deg)`;
     };
 
-    map.on("rotate", updateRotation);
-    map.on("pitch", updateRotation);
+    map.on('rotate', updateRotation);
+    map.on('pitch', updateRotation);
     updateRotation();
 
     return () => {
-      map.off("rotate", updateRotation);
-      map.off("pitch", updateRotation);
+      map.off('rotate', updateRotation);
+      map.off('pitch', updateRotation);
     };
   }, [map]);
 
@@ -904,7 +985,7 @@ function CompassButton({ onClick }: { onClick: () => void }) {
         ref={compassRef}
         viewBox="0 0 24 24"
         className="size-5 transition-transform duration-200"
-        style={{ transformStyle: "preserve-3d" }}
+        style={{ transformStyle: 'preserve-3d' }}
       >
         <path d="M12 2L16 12H12V2Z" className="fill-red-500" />
         <path d="M12 2L8 12H12V2Z" className="fill-red-300" />
@@ -928,7 +1009,7 @@ type MapPopupProps = {
   className?: string;
   /** Show a close button in the popup (default: false) */
   closeButton?: boolean;
-} & Omit<PopupOptions, "className" | "closeButton">;
+} & Omit<PopupOptions, 'className' | 'closeButton'>;
 
 function MapPopup({
   longitude,
@@ -943,7 +1024,7 @@ function MapPopup({
   const popupOptionsRef = useRef(popupOptions);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
-  const container = useMemo(() => document.createElement("div"), []);
+  const container = useMemo(() => document.createElement('div'), []);
 
   const popup = useMemo(() => {
     const popupInstance = new MapLibreGL.Popup({
@@ -951,7 +1032,7 @@ function MapPopup({
       ...popupOptions,
       closeButton: false,
     })
-      .setMaxWidth("none")
+      .setMaxWidth('none')
       .setLngLat([longitude, latitude]);
 
     return popupInstance;
@@ -963,13 +1044,13 @@ function MapPopup({
 
     const onCloseProp = () => onCloseRef.current?.();
 
-    popup.on("close", onCloseProp);
+    popup.on('close', onCloseProp);
 
     popup.setDOMContent(container);
     popup.addTo(map);
 
     return () => {
-      popup.off("close", onCloseProp);
+      popup.off('close', onCloseProp);
       if (popup.isOpen()) {
         popup.remove();
       }
@@ -991,7 +1072,7 @@ function MapPopup({
       popup.setOffset(popupOptions.offset ?? 16);
     }
     if (prev.maxWidth !== popupOptions.maxWidth && popupOptions.maxWidth) {
-      popup.setMaxWidth(popupOptions.maxWidth ?? "none");
+      popup.setMaxWidth(popupOptions.maxWidth ?? 'none');
     }
     popupOptionsRef.current = popupOptions;
   }
@@ -1003,8 +1084,8 @@ function MapPopup({
   return createPortal(
     <div
       className={cn(
-        "relative rounded-md border bg-popover p-3 text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95",
-        className
+        'relative rounded-md border bg-popover p-3 text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95',
+        className,
       )}
     >
       {closeButton && (
@@ -1020,7 +1101,7 @@ function MapPopup({
       )}
       {children}
     </div>,
-    container
+    container,
   );
 }
 
@@ -1050,7 +1131,7 @@ type MapRouteProps = {
 function MapRoute({
   id: propId,
   coordinates,
-  color = "#4285F4",
+  color = '#4285F4',
   width = 3,
   opacity = 0.8,
   dashArray,
@@ -1070,24 +1151,24 @@ function MapRoute({
     if (!isLoaded || !map) return;
 
     map.addSource(sourceId, {
-      type: "geojson",
+      type: 'geojson',
       data: {
-        type: "Feature",
+        type: 'Feature',
         properties: {},
-        geometry: { type: "LineString", coordinates: [] },
+        geometry: { type: 'LineString', coordinates: [] },
       },
     });
 
     map.addLayer({
       id: layerId,
-      type: "line",
+      type: 'line',
       source: sourceId,
-      layout: { "line-join": "round", "line-cap": "round" },
+      layout: { 'line-join': 'round', 'line-cap': 'round' },
       paint: {
-        "line-color": color,
-        "line-width": width,
-        "line-opacity": opacity,
-        ...(dashArray && { "line-dasharray": dashArray }),
+        'line-color': color,
+        'line-width': width,
+        'line-opacity': opacity,
+        ...(dashArray && { 'line-dasharray': dashArray }),
       },
     });
 
@@ -1109,9 +1190,9 @@ function MapRoute({
     const source = map.getSource(sourceId) as MapLibreGL.GeoJSONSource;
     if (source) {
       source.setData({
-        type: "Feature",
+        type: 'Feature',
         properties: {},
-        geometry: { type: "LineString", coordinates },
+        geometry: { type: 'LineString', coordinates },
       });
     }
   }, [isLoaded, map, coordinates, sourceId]);
@@ -1119,11 +1200,11 @@ function MapRoute({
   useEffect(() => {
     if (!isLoaded || !map || !map.getLayer(layerId)) return;
 
-    map.setPaintProperty(layerId, "line-color", color);
-    map.setPaintProperty(layerId, "line-width", width);
-    map.setPaintProperty(layerId, "line-opacity", opacity);
+    map.setPaintProperty(layerId, 'line-color', color);
+    map.setPaintProperty(layerId, 'line-width', width);
+    map.setPaintProperty(layerId, 'line-opacity', opacity);
     if (dashArray) {
-      map.setPaintProperty(layerId, "line-dasharray", dashArray);
+      map.setPaintProperty(layerId, 'line-dasharray', dashArray);
     }
   }, [isLoaded, map, layerId, color, width, opacity, dashArray]);
 
@@ -1135,22 +1216,22 @@ function MapRoute({
       onClick?.();
     };
     const handleMouseEnter = () => {
-      map.getCanvas().style.cursor = "pointer";
+      map.getCanvas().style.cursor = 'pointer';
       onMouseEnter?.();
     };
     const handleMouseLeave = () => {
-      map.getCanvas().style.cursor = "";
+      map.getCanvas().style.cursor = '';
       onMouseLeave?.();
     };
 
-    map.on("click", layerId, handleClick);
-    map.on("mouseenter", layerId, handleMouseEnter);
-    map.on("mouseleave", layerId, handleMouseLeave);
+    map.on('click', layerId, handleClick);
+    map.on('mouseenter', layerId, handleMouseEnter);
+    map.on('mouseleave', layerId, handleMouseLeave);
 
     return () => {
-      map.off("click", layerId, handleClick);
-      map.off("mouseenter", layerId, handleMouseEnter);
-      map.off("mouseleave", layerId, handleMouseLeave);
+      map.off('click', layerId, handleClick);
+      map.off('mouseenter', layerId, handleMouseEnter);
+      map.off('mouseleave', layerId, handleMouseLeave);
     };
   }, [
     isLoaded,
@@ -1166,7 +1247,7 @@ function MapRoute({
 }
 
 type MapClusterLayerProps<
-  P extends GeoJSON.GeoJsonProperties = GeoJSON.GeoJsonProperties
+  P extends GeoJSON.GeoJsonProperties = GeoJSON.GeoJsonProperties,
 > = {
   /** GeoJSON FeatureCollection data or URL to fetch GeoJSON from */
   data: string | GeoJSON.FeatureCollection<GeoJSON.Point, P>;
@@ -1178,30 +1259,70 @@ type MapClusterLayerProps<
   clusterColors?: [string, string, string];
   /** Point count thresholds for color/size steps: [medium, large] (default: [100, 750]) */
   clusterThresholds?: [number, number];
-  /** Color for unclustered individual points (default: "#3b82f6") */
+  /** Radius sizes for cluster circles: [small, medium, large] in pixels (default: [20, 30, 40]) */
+  clusterSizes?: [number, number, number];
+  /** Stroke color for cluster circles (default: "#ffffff") */
+  clusterStrokeColor?: string;
+  /** Stroke width for cluster circles in pixels (default: 2) */
+  clusterStrokeWidth?: number;
+  /** Text color for cluster count labels (default: "#ffffff") */
+  clusterTextColor?: string;
+  /** Text size for cluster count labels (default: 12) */
+  clusterTextSize?: number;
+  /**
+   * Optional suffix to show below the cluster count (e.g. "Stores" → "8 Stores").
+   * Adds a second text line beneath the count number.
+   */
+  clusterLabelSuffix?: string;
+  /** Color for unclustered individual points (default: "#3b82f6"). Ignored when pointIconUrl is set. */
   pointColor?: string;
+  /** Radius for unclustered individual points in pixels (default: 5). Ignored when pointIconUrl is set. */
+  pointRadius?: number;
+  /** Stroke color for unclustered individual points (default: "#ffffff"). Ignored when pointIconUrl is set. */
+  pointStrokeColor?: string;
+  /** Stroke width for unclustered individual points in pixels (default: 2). Ignored when pointIconUrl is set. */
+  pointStrokeWidth?: number;
+  /**
+   * URL of an image to use as the icon for unclustered individual points.
+   * When provided, renders an image symbol instead of a circle.
+   * Supports PNG, JPEG, SVG (rasterized), or any URL MapLibre can load.
+   */
+  pointIconUrl?: string;
+  /** Scale factor for the point icon image (default: 1). Values < 1 shrink it, > 1 enlarge it. */
+  pointIconSize?: number;
   /** Callback when an unclustered point is clicked */
   onPointClick?: (
     feature: GeoJSON.Feature<GeoJSON.Point, P>,
-    coordinates: [number, number]
+    coordinates: [number, number],
   ) => void;
   /** Callback when a cluster is clicked. If not provided, zooms into the cluster */
   onClusterClick?: (
     clusterId: number,
     coordinates: [number, number],
-    pointCount: number
+    pointCount: number,
   ) => void;
 };
 
 function MapClusterLayer<
-  P extends GeoJSON.GeoJsonProperties = GeoJSON.GeoJsonProperties
+  P extends GeoJSON.GeoJsonProperties = GeoJSON.GeoJsonProperties,
 >({
   data,
   clusterMaxZoom = 14,
   clusterRadius = 50,
-  clusterColors = ["#22c55e", "#eab308", "#ef4444"],
+  clusterColors = ['#22c55e', '#eab308', '#ef4444'],
   clusterThresholds = [100, 750],
-  pointColor = "#3b82f6",
+  clusterSizes = [20, 30, 40],
+  clusterStrokeColor = '#ffffff',
+  clusterStrokeWidth = 2,
+  clusterTextColor = '#ffffff',
+  clusterTextSize = 12,
+  clusterLabelSuffix,
+  pointColor = '#3b82f6',
+  pointRadius = 5,
+  pointStrokeColor = '#ffffff',
+  pointStrokeWidth = 2,
+  pointIconUrl,
+  pointIconSize = 1,
   onPointClick,
   onClusterClick,
 }: MapClusterLayerProps<P>) {
@@ -1210,106 +1331,195 @@ function MapClusterLayer<
   const sourceId = `cluster-source-${id}`;
   const clusterLayerId = `clusters-${id}`;
   const clusterCountLayerId = `cluster-count-${id}`;
+  const clusterLabelLayerId = `cluster-label-${id}`;
   const unclusteredLayerId = `unclustered-point-${id}`;
+  // Stable image ID derived from component instance
+  const pointIconImageId = `point-icon-${id}`;
 
   const stylePropsRef = useRef({
     clusterColors,
     clusterThresholds,
+    clusterSizes,
+    clusterStrokeColor,
+    clusterStrokeWidth,
+    clusterTextColor,
+    clusterTextSize,
     pointColor,
+    pointRadius,
+    pointStrokeColor,
+    pointStrokeWidth,
+    pointIconUrl,
+    pointIconSize,
   });
 
   // Add source and layers on mount
   useEffect(() => {
     if (!isLoaded || !map) return;
 
-    // Add clustered GeoJSON source
-    map.addSource(sourceId, {
-      type: "geojson",
-      data,
-      cluster: true,
-      clusterMaxZoom,
-      clusterRadius,
-    });
+    let cancelled = false;
 
-    // Add cluster circles layer
-    map.addLayer({
-      id: clusterLayerId,
-      type: "circle",
-      source: sourceId,
-      filter: ["has", "point_count"],
-      paint: {
-        "circle-color": [
-          "step",
-          ["get", "point_count"],
-          clusterColors[0],
-          clusterThresholds[0],
-          clusterColors[1],
-          clusterThresholds[1],
-          clusterColors[2],
-        ],
-        "circle-radius": [
-          "step",
-          ["get", "point_count"],
-          20,
-          clusterThresholds[0],
-          30,
-          clusterThresholds[1],
-          40,
-        ],
-        "circle-stroke-width": 1,
-        "circle-stroke-color": "#fff",
-        "circle-opacity": 0.85,
-      },
-    });
+    async function setup() {
+      if (!map) return;
 
-    // Add cluster count text layer
-    map.addLayer({
-      id: clusterCountLayerId,
-      type: "symbol",
-      source: sourceId,
-      filter: ["has", "point_count"],
-      layout: {
-        "text-field": "{point_count_abbreviated}",
-        "text-font": ["Open Sans"],
-        "text-size": 12,
-      },
-      paint: {
-        "text-color": "#fff",
-      },
-    });
+      // Add clustered GeoJSON source
+      map.addSource(sourceId, {
+        type: 'geojson',
+        data,
+        cluster: true,
+        clusterMaxZoom,
+        clusterRadius,
+      });
 
-    // Add unclustered point layer
-    map.addLayer({
-      id: unclusteredLayerId,
-      type: "circle",
-      source: sourceId,
-      filter: ["!", ["has", "point_count"]],
-      paint: {
-        "circle-color": pointColor,
-        "circle-radius": 5,
-        "circle-stroke-width": 2,
-        "circle-stroke-color": "#fff",
-      },
-    });
+      // Add cluster circles layer
+      map.addLayer({
+        id: clusterLayerId,
+        type: 'circle',
+        source: sourceId,
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            clusterColors[0],
+            clusterThresholds[0],
+            clusterColors[1],
+            clusterThresholds[1],
+            clusterColors[2],
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            clusterSizes[0],
+            clusterThresholds[0],
+            clusterSizes[1],
+            clusterThresholds[1],
+            clusterSizes[2],
+          ],
+          'circle-stroke-width': clusterStrokeWidth,
+          'circle-stroke-color': clusterStrokeColor,
+          'circle-opacity': 1,
+        },
+      });
+
+      // Add cluster count text layer
+      map.addLayer({
+        id: clusterCountLayerId,
+        type: 'symbol',
+        source: sourceId,
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-size': clusterTextSize,
+          'text-allow-overlap': true,
+        },
+        paint: {
+          'text-color': clusterTextColor,
+        },
+      });
+
+      // If a label suffix is given, add a separate layer below the circle for the label
+      if (clusterLabelSuffix) {
+        map.addLayer({
+          id: clusterLabelLayerId,
+          type: 'symbol',
+          source: sourceId,
+          filter: ['has', 'point_count'],
+          layout: {
+            'text-field': [
+              'concat',
+              ['to-string', ['get', 'point_count']],
+              ` ${clusterLabelSuffix}`,
+            ],
+            'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+            'text-size': 11,
+            // Offset below the circle (in em units, positive = down)
+            'text-offset': [0, 2.8],
+            'text-anchor': 'top',
+            'text-allow-overlap': true,
+          },
+          paint: {
+            'text-color': '#111111',
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 1.5,
+          },
+        });
+      }
+
+      // Unclustered points: icon image or circle
+      if (pointIconUrl) {
+        // Load and register the image, then add a symbol layer
+        try {
+          const image = await map.loadImage(pointIconUrl);
+          if (cancelled || !map) return;
+          if (!map.hasImage(pointIconImageId)) {
+            map.addImage(pointIconImageId, image.data);
+          }
+          map.addLayer({
+            id: unclusteredLayerId,
+            type: 'symbol',
+            source: sourceId,
+            filter: ['!', ['has', 'point_count']],
+            layout: {
+              'icon-image': pointIconImageId,
+              'icon-size': pointIconSize,
+              'icon-allow-overlap': true,
+              'icon-ignore-placement': true,
+            },
+          });
+        } catch (err) {
+          console.error('[MapClusterLayer] Failed to load point icon:', err);
+        }
+      } else {
+        map.addLayer({
+          id: unclusteredLayerId,
+          type: 'circle',
+          source: sourceId,
+          filter: ['!', ['has', 'point_count']],
+          paint: {
+            'circle-color': pointColor,
+            'circle-radius': pointRadius,
+            'circle-stroke-width': pointStrokeWidth,
+            'circle-stroke-color': pointStrokeColor,
+          },
+        });
+      }
+    }
+
+    setup();
 
     return () => {
+      cancelled = true;
       try {
+        if (map.getLayer(clusterLabelLayerId))
+          map.removeLayer(clusterLabelLayerId);
         if (map.getLayer(clusterCountLayerId))
           map.removeLayer(clusterCountLayerId);
         if (map.getLayer(unclusteredLayerId))
           map.removeLayer(unclusteredLayerId);
         if (map.getLayer(clusterLayerId)) map.removeLayer(clusterLayerId);
         if (map.getSource(sourceId)) map.removeSource(sourceId);
+        if (map.hasImage(pointIconImageId)) map.removeImage(pointIconImageId);
       } catch {
         // ignore
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, map, sourceId]);
+  }, [
+    isLoaded,
+    map,
+    sourceId,
+    clusterMaxZoom,
+    clusterRadius,
+    data,
+    clusterLabelSuffix,
+    pointIconUrl,
+    pointIconImageId,
+  ]);
 
   // Update source data when data prop changes (only for non-URL data)
   useEffect(() => {
-    if (!isLoaded || !map || typeof data === "string") return;
+    if (!isLoaded || !map || typeof data === 'string') return;
 
     const source = map.getSource(sourceId) as MapLibreGL.GeoJSONSource;
     if (source) {
@@ -1322,46 +1532,127 @@ function MapClusterLayer<
     if (!isLoaded || !map) return;
 
     const prev = stylePropsRef.current;
-    const colorsChanged =
-      prev.clusterColors !== clusterColors ||
-      prev.clusterThresholds !== clusterThresholds;
 
-    // Update cluster layer colors and sizes
-    if (map.getLayer(clusterLayerId) && colorsChanged) {
-      map.setPaintProperty(clusterLayerId, "circle-color", [
-        "step",
-        ["get", "point_count"],
+    const clusterStyleChanged =
+      prev.clusterColors !== clusterColors ||
+      prev.clusterThresholds !== clusterThresholds ||
+      prev.clusterSizes !== clusterSizes ||
+      prev.clusterStrokeColor !== clusterStrokeColor ||
+      prev.clusterStrokeWidth !== clusterStrokeWidth;
+
+    if (map.getLayer(clusterLayerId) && clusterStyleChanged) {
+      map.setPaintProperty(clusterLayerId, 'circle-color', [
+        'step',
+        ['get', 'point_count'],
         clusterColors[0],
         clusterThresholds[0],
         clusterColors[1],
         clusterThresholds[1],
         clusterColors[2],
       ]);
-      map.setPaintProperty(clusterLayerId, "circle-radius", [
-        "step",
-        ["get", "point_count"],
-        20,
+      map.setPaintProperty(clusterLayerId, 'circle-radius', [
+        'step',
+        ['get', 'point_count'],
+        clusterSizes[0],
         clusterThresholds[0],
-        30,
+        clusterSizes[1],
         clusterThresholds[1],
-        40,
+        clusterSizes[2],
       ]);
+      map.setPaintProperty(
+        clusterLayerId,
+        'circle-stroke-color',
+        clusterStrokeColor,
+      );
+      map.setPaintProperty(
+        clusterLayerId,
+        'circle-stroke-width',
+        clusterStrokeWidth,
+      );
     }
 
-    // Update unclustered point layer color
-    if (map.getLayer(unclusteredLayerId) && prev.pointColor !== pointColor) {
-      map.setPaintProperty(unclusteredLayerId, "circle-color", pointColor);
+    if (map.getLayer(clusterCountLayerId)) {
+      if (prev.clusterTextColor !== clusterTextColor) {
+        map.setPaintProperty(
+          clusterCountLayerId,
+          'text-color',
+          clusterTextColor,
+        );
+      }
+      if (prev.clusterTextSize !== clusterTextSize) {
+        map.setLayoutProperty(
+          clusterCountLayerId,
+          'text-size',
+          clusterTextSize,
+        );
+      }
     }
 
-    stylePropsRef.current = { clusterColors, clusterThresholds, pointColor };
+    // Update unclustered circle layer (only when not using icon)
+    if (!pointIconUrl && map.getLayer(unclusteredLayerId)) {
+      if (prev.pointColor !== pointColor) {
+        map.setPaintProperty(unclusteredLayerId, 'circle-color', pointColor);
+      }
+      if (prev.pointRadius !== pointRadius) {
+        map.setPaintProperty(unclusteredLayerId, 'circle-radius', pointRadius);
+      }
+      if (prev.pointStrokeColor !== pointStrokeColor) {
+        map.setPaintProperty(
+          unclusteredLayerId,
+          'circle-stroke-color',
+          pointStrokeColor,
+        );
+      }
+      if (prev.pointStrokeWidth !== pointStrokeWidth) {
+        map.setPaintProperty(
+          unclusteredLayerId,
+          'circle-stroke-width',
+          pointStrokeWidth,
+        );
+      }
+    }
+
+    // Update icon size if using icon layer
+    if (pointIconUrl && map.getLayer(unclusteredLayerId)) {
+      if (prev.pointIconSize !== pointIconSize) {
+        map.setLayoutProperty(unclusteredLayerId, 'icon-size', pointIconSize);
+      }
+    }
+
+    stylePropsRef.current = {
+      clusterColors,
+      clusterThresholds,
+      clusterSizes,
+      clusterStrokeColor,
+      clusterStrokeWidth,
+      clusterTextColor,
+      clusterTextSize,
+      pointColor,
+      pointRadius,
+      pointStrokeColor,
+      pointStrokeWidth,
+      pointIconUrl,
+      pointIconSize,
+    };
   }, [
     isLoaded,
     map,
     clusterLayerId,
+    clusterCountLayerId,
     unclusteredLayerId,
     clusterColors,
     clusterThresholds,
+    clusterSizes,
+    clusterStrokeColor,
+    clusterStrokeWidth,
+    clusterTextColor,
+    clusterTextSize,
     pointColor,
+    pointRadius,
+    pointStrokeColor,
+    pointStrokeWidth,
+    pointIconUrl,
+    pointIconSize,
   ]);
 
   // Handle click events
@@ -1372,7 +1663,7 @@ function MapClusterLayer<
     const handleClusterClick = async (
       e: MapLibreGL.MapMouseEvent & {
         features?: MapLibreGL.MapGeoJSONFeature[];
-      }
+      },
     ) => {
       const features = map.queryRenderedFeatures(e.point, {
         layers: [clusterLayerId],
@@ -1384,7 +1675,7 @@ function MapClusterLayer<
       const pointCount = feature.properties?.point_count as number;
       const coordinates = (feature.geometry as GeoJSON.Point).coordinates as [
         number,
-        number
+        number,
       ];
 
       if (onClusterClick) {
@@ -1404,7 +1695,7 @@ function MapClusterLayer<
     const handlePointClick = (
       e: MapLibreGL.MapMouseEvent & {
         features?: MapLibreGL.MapGeoJSONFeature[];
-      }
+      },
     ) => {
       if (!onPointClick || !e.features?.length) return;
 
@@ -1420,40 +1711,40 @@ function MapClusterLayer<
 
       onPointClick(
         feature as unknown as GeoJSON.Feature<GeoJSON.Point, P>,
-        coordinates
+        coordinates,
       );
     };
 
     // Cursor style handlers
     const handleMouseEnterCluster = () => {
-      map.getCanvas().style.cursor = "pointer";
+      map.getCanvas().style.cursor = 'pointer';
     };
     const handleMouseLeaveCluster = () => {
-      map.getCanvas().style.cursor = "";
+      map.getCanvas().style.cursor = '';
     };
     const handleMouseEnterPoint = () => {
       if (onPointClick) {
-        map.getCanvas().style.cursor = "pointer";
+        map.getCanvas().style.cursor = 'pointer';
       }
     };
     const handleMouseLeavePoint = () => {
-      map.getCanvas().style.cursor = "";
+      map.getCanvas().style.cursor = '';
     };
 
-    map.on("click", clusterLayerId, handleClusterClick);
-    map.on("click", unclusteredLayerId, handlePointClick);
-    map.on("mouseenter", clusterLayerId, handleMouseEnterCluster);
-    map.on("mouseleave", clusterLayerId, handleMouseLeaveCluster);
-    map.on("mouseenter", unclusteredLayerId, handleMouseEnterPoint);
-    map.on("mouseleave", unclusteredLayerId, handleMouseLeavePoint);
+    map.on('click', clusterLayerId, handleClusterClick);
+    map.on('click', unclusteredLayerId, handlePointClick);
+    map.on('mouseenter', clusterLayerId, handleMouseEnterCluster);
+    map.on('mouseleave', clusterLayerId, handleMouseLeaveCluster);
+    map.on('mouseenter', unclusteredLayerId, handleMouseEnterPoint);
+    map.on('mouseleave', unclusteredLayerId, handleMouseLeavePoint);
 
     return () => {
-      map.off("click", clusterLayerId, handleClusterClick);
-      map.off("click", unclusteredLayerId, handlePointClick);
-      map.off("mouseenter", clusterLayerId, handleMouseEnterCluster);
-      map.off("mouseleave", clusterLayerId, handleMouseLeaveCluster);
-      map.off("mouseenter", unclusteredLayerId, handleMouseEnterPoint);
-      map.off("mouseleave", unclusteredLayerId, handleMouseLeavePoint);
+      map.off('click', clusterLayerId, handleClusterClick);
+      map.off('click', unclusteredLayerId, handlePointClick);
+      map.off('mouseenter', clusterLayerId, handleMouseEnterCluster);
+      map.off('mouseleave', clusterLayerId, handleMouseLeaveCluster);
+      map.off('mouseenter', unclusteredLayerId, handleMouseEnterPoint);
+      map.off('mouseleave', unclusteredLayerId, handleMouseLeavePoint);
     };
   }, [
     isLoaded,

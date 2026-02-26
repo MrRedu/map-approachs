@@ -21,7 +21,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-                Demo of Apple&apos;s MapKit JS with markers and routes
+                Demo of Apple&apos;s MapKit JS
               </p>
               <Button asChild>
                 <Link href="/maps/apple">Open Apple Maps</Link>
@@ -32,7 +32,7 @@ export default function Home() {
           <Card>
             <CardHeader>
               <CardTitle>MapCN</CardTitle>
-              <CardDescription>Mapbox China Variant</CardDescription>
+              <CardDescription>mapcn Integration</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
